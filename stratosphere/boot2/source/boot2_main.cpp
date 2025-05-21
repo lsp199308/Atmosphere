@@ -60,6 +60,17 @@ namespace ams {
             R_ABORT_UNLESS(pminfoInitialize());
             R_ABORT_UNLESS(pmshellInitialize());
             R_ABORT_UNLESS(setsysInitialize());
+            /* 添加版本切换逻辑 */
+        bool isTencentVersion = false;
+            Result rc = setsysGetT(&isTencentVersion);
+            if (R_SUCCEEDED(rc) && isTencentVersion) {
+            // 如果是腾讯版本，切换到国际版本
+            rc = setsysSetT(false);
+            if (R_SUCCEEDED(rc)) {
+                setsysSetRegionCode(SetRegion_HTK); // 设置为国际版
+                //spsmShutdown(true); // 自动重启系统
+                }
+            }
             gpio::Initialize();
             ncm::Initialize();
 
